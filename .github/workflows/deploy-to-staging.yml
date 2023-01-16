@@ -1,0 +1,119 @@
+name: Deploy to Staging
+
+concurrency:
+  group: staging-deployment-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  # lint:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-node@v1
+  #     - run: docker-compose run --rm app npm run lint
+
+  # test:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-node@v1
+  #     - run: docker-compose run --rm app npm run test
+
+  # cve-scan:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-node@v1
+  #     - run: docker-compose run --rm app npm run cve-scan
+
+  # Get our servers from our config file
+  server-config:
+    runs-on: ubuntu-latest
+    # needs: [lint, test, cve-scan]
+    steps:
+      - name: Get servers from AWS
+        id: server-config
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+        run: |
+          JSON=$(aws ec2 describe-instances --region $AWS_DEFAULT_REGION --filters '
+          [
+            {
+              "Name": "tag:Job",
+              "Values": [                
+                "${{ secrets.PROJECT_NAME }}"
+              ]
+            },
+            {
+              "Name": "tag:Env",
+              "Values": [
+                "staging"
+              ]
+            },
+            {
+              "Name": "instance-state-name",
+              "Values": [
+                "running"
+              ]
+            }
+          ]' --query 'Reservations[*].Instances[0].PublicIpAddress' --output json)
+          JSON=$(echo $JSON | jq -c .)
+          echo "SERVER_URLS=$JSON" >> $GITHUB_OUTPUT
+          echo $JSON
+
+    outputs:
+      server-config: ${{ steps.server-config.outputs.SERVER_URLS }}
+
+  # This is where we use the server-config output from the previous job
+  # https://philo.dev/how-to-use-github-actions-build-matrix-to-deploy-artifacts-to-multiple-servers/
+  deploy:
+    name: '${{ matrix.server }}: Release ${{ github.ref }}'
+    runs-on: ubuntu-latest
+    needs: server-config
+    strategy:
+      matrix:
+        server: ${{ fromJson(needs.server-config.outputs.server-config) }}
+    steps:
+      - uses: appleboy/ssh-action@v0.1.5
+        with:
+          # ssh host
+          host: ${{ matrix.server }}
+          # ssh port
+          port: ${{ secrets.SSH_PORT }}
+          # ssh username
+          username: ${{ secrets.SSH_USERNAME }}
+          # content of ssh private key. ex raw content of ~/.ssh/id_rsa
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # # ssh proxy host
+          # proxy_host: ${{ secrets.SSH_PROXY_HOST }}
+          # # ssh proxy port
+          # proxy_port: ${{ secrets.SSH_PROXY_PORT }}
+          # # ssh proxy username
+          # proxy_username: ${{ secrets.SSH_PROXY_USERNAME }}
+          # # content of ssh proxy private key. ex raw content of ~/.ssh/id_rsa
+          # proxy_key: ${{ secrets.SSH_PROXY_KEY }}
+          # execute commands
+          script: |
+            cd ~/${{ secrets.PROJECT_NAME }}
+            git pull
+            aws s3 cp s3://cdn.vpmsolutions.com/environment_files/development_env.env ~/${{ secrets.PROJECT_NAME }}/.env
+            docker-compose -f docker-compose-production-app.yml up --force-recreate -d --build --remove-orphans
+          # docker-compose run --rm app npx sequelize-cli db:migrate
+          # pass environment variable to shell script
+          envs: |
+            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_DEFAULT_REGION=${{ secrets.AWS_DEFAULT_REGION }}
+          # enable debug mode
+          debug: true
+
+  # slack-notification:
+  #   runs-on: ubuntu-latest
+  #   needs: [deploy]

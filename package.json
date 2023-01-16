@@ -1,0 +1,59 @@
+{
+  "name": "zero-wars",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bin/www",
+  "scripts": {
+    "test": "NODE_ENV=test jest --detectOpenHandles --forceExit",
+    "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx ./",
+    "build": "tsc",
+    "dev": "nodemon app.ts",
+    "migrate": "npx sequelize db:migrate",
+    "migrate:fresh": "npx sequelize db:migrate:undo:all && npx sequelize db:migrate",
+    "make:migration": "npx sequelize migration:create"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "axios": "^1.2.0",
+    "convict": "^6.2.4",
+    "cron": "^2.2.0",
+    "dayjs": "^1.11.5",
+    "debug": "^4.3.4",
+    "discord.js": "^14.7.1",
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "mathjs": "^11.5.0",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.21.4",
+    "sequelize-cli": "^6.5.2",
+    "winston": "^3.8.1"
+  },
+  "devDependencies": {
+    "@types/convict": "^6.1.1",
+    "@types/cron": "^2.0.0",
+    "@types/debug": "^4.1.7",
+    "@types/node": "^18.7.14",
+    "@typescript-eslint/eslint-plugin": "^5.36.1",
+    "@typescript-eslint/parser": "^5.36.1",
+    "eslint": "^8.23.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^3.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "nodemon": "^2.0.19",
+    "prettier": "^2.7.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.2"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "tabWidth": 2,
+    "semi": true,
+    "printWidth": 160,
+    "trailingComma": "all",
+    "bracketSpacing": true,
+    "arrowParens": "always"
+  }
+}

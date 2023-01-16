@@ -1,0 +1,21 @@
+# Initializes a new nodejs project with docker
+
+version: '3.7'
+services:
+  app:
+    image: zero-wars-api
+    user: 1000:1000
+    container_name: zero-wars-api
+    restart: unless-stopped
+    working_dir: /usr/src/app
+    command: sh -c "npm install --no-audit && npm run build && node dist/app.js"
+    ports:
+      - '5000:5000'
+    volumes:
+      - ./:/usr/src/app
+    networks:
+      - zero-wars-network
+
+networks:
+  zero-wars-network:
+    driver: bridge
