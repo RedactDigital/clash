@@ -3,7 +3,7 @@
 version: '3.7'
 services:
   app:
-    image: zero-wars-api
+    image: node:18.13.0
     user: 1000:1000
     container_name: zero-wars-api
     restart: unless-stopped
