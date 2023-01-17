@@ -11,8 +11,7 @@ services:
     command: |
       bash -c "
         npm install
-        npm run build
-        node dist/app.js
+        npm run prod
       "
     ports:
       - '5050:5050'

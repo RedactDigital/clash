@@ -8,6 +8,7 @@
     "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx ./",
     "build": "tsc",
     "dev": "nodemon app.ts",
+    "prod": "npm run build && node dist/app.js",
     "migrate": "npx sequelize db:migrate",
     "migrate:fresh": "npx sequelize db:migrate:undo:all && npx sequelize db:migrate",
     "make:migration": "npx sequelize migration:create"
