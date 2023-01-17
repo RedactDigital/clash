@@ -1,4 +1,4 @@
-import { round } from 'mathjs';
+import { LOG10E, round } from 'mathjs';
 import { Op } from 'sequelize';
 import Clan from '../database/models/Clan.model';
 import ClanMember from '../database/models/ClanMember.model';
@@ -20,10 +20,10 @@ export const updateMemberScores = async (clan: Clan): Promise<void> => {
 
     for (const member of members) {
       const totalAttacks = member.warAttacks.filter((attack) => attack.duration > 0).length;
-      const totalWars = member.warAttacks.length;
+      const totalWars = member.warAttacks.length ? member.warAttacks.length / 2 : 0;
       const averageAttacks = round(totalAttacks / 2 / totalWars, 2) * 100; // 2 attacks per war
       const totalStars = member.warAttacks.reduce((acc, attack) => acc + attack.stars, 0);
-      const averageStars = round(totalStars / 3 / totalWars, 2) * 100; // 3 stars per war
+      const averageStars = round(totalStars / 6 / totalWars, 2) * 100; // 6 stars per war
       const averageDestruction = round(member.warAttacks.reduce((acc, attack) => acc + attack.destructionPercentage, 0) / totalAttacks, 2);
 
       const weights = {
@@ -44,8 +44,6 @@ export const updateMemberScores = async (clan: Clan): Promise<void> => {
       if (averageStars > 0) scores.averageStars = averageStars * weights.stars;
       if (averageDestruction > 0) scores.averageDestruction = averageDestruction * weights.destruction;
       if (member.donations > 0) scores.donations = member.donations * weights.donations;
-
-      log.info(`Member ${member.name} scores:`, scores);
 
       const totalScore = round(
         Object.values(scores).reduce((acc, score) => acc + score, 0),
