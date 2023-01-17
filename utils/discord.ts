@@ -62,6 +62,13 @@ export class Discord {
   private async _embedTop25(channel: any) {
     const members = await ClanMember.findAll({ where: { role: { [Op.not]: 'Former Member' }, warPreference: 'in' }, order: [['score', 'DESC']], limit: 25 });
 
+    const membersWithMoreThanOneAttack = members.filter((member) => member.totalAttacks > 0);
+    const totalAverageAttacks = membersWithMoreThanOneAttack.reduce((acc, member) => acc + member.averageAttacks, 0);
+    const clansAvgAttackRate = round((totalAverageAttacks / membersWithMoreThanOneAttack.length / 100) * 2, 2);
+
+    const top25AverageAttacks = members.reduce((acc, member) => acc + member.averageAttacks, 0);
+    const top25AvgAttackRate = round((top25AverageAttacks / members.length / 100) * 2, 2);
+
     let count = 0;
     const formatFieldData = await members.map((member) => {
       count++;
@@ -91,6 +98,9 @@ export class Discord {
         **Average Attack Rate** - 60%
         **Average Stars** - 30%
         **Average Destruction** - 10%
+
+        **Average Attack Rate** - ${clansAvgAttackRate}% (based on the top 25 players who are opted into war, and have more than 1 attack)
+        **Top 25 Average Attack Rate** - ${top25AvgAttackRate}% (based on the top 25 players who are opted into war)
         `,
       )
       .addFields(formatFieldData);
