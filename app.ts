@@ -7,7 +7,7 @@ import schedule from './utils/schedule';
 
 log.info('Starting cron jobs');
 
-const job = new CronJob(schedule.everyFifteenSeconds, processClanData);
+const job = new CronJob(schedule.everyFiveMinutes, processClanData);
 
 new Discord(true);
 
