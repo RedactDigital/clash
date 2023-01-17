@@ -90,15 +90,14 @@ export class Discord {
       .setTitle('Zero Wars Top 25 Scoreboard')
       .setDescription(
         `
-        *Last Updated: ${dayjs().format('MMMM D h:mm A')} - UTC*
-        *Note: If you are new and have never attacked in war, your score will be low. Don't worry, we will still include you in war. The first war can make or break your score since I use your Average Attack Rate for most of the score. So if you don't attack or only attack once, it could hurt you from getting in future wars.*\n
+        *Last Updated: ${dayjs().format('MMMM D h:mm A')} - UTC*\n        
         *If you don't see your name, you are either not opted into war, or you are below the top 25 players.*\n
         **Breakdown of how the score is weighted:**
         ---
         **Average Attack Rate** - 60%
         **Average Stars** - 30%
-        **Average Destruction** - 10%
-        ---
+        **Average Destruction** - 10%\n
+        
         **Average Attack Rate** - ${clansAvgAttackRate}% (based on the top 25 players who are opted into war, and have more than 1 attack)
         **Top 25 Average Attack Rate** - ${top25AvgAttackRate}% (based on the top 25 players who are opted into war)
         `,
