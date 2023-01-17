@@ -15,8 +15,6 @@ export const updateClan = async (clan: Clan): Promise<void> => {
     });
     const res = await req.json();
 
-    console.log(res.tag);
-
     await clan.update({
       tag: res.tag.replace('#', ''),
       name: res.name,

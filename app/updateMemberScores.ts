@@ -45,6 +45,8 @@ export const updateMemberScores = async (clan: Clan): Promise<void> => {
       if (averageDestruction > 0) scores.averageDestruction = averageDestruction * weights.destruction;
       if (member.donations > 0) scores.donations = member.donations * weights.donations;
 
+      console.log(scores);
+
       const totalScore = round(
         Object.values(scores).reduce((acc, score) => acc + score, 0),
         2,

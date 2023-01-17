@@ -98,8 +98,8 @@ export class Discord {
         **Average Stars** - 30%
         **Average Destruction** - 10%
         
-        **Average Attack Rate** - ${clansAvgAttackRate}% (based on the top 25 players who are opted into war, and have more than 1 attack)
-        **Top 25 Average Attack Rate** - ${top25AvgAttackRate}% (based on the top 25 players who are opted into war)
+        **Average Attack Rate** - ${clansAvgAttackRate} out of 2 (based on the top 25 players who are opted into war, and have more than 1 attack)
+        **Top 25 Average Attack Rate** - ${top25AvgAttackRate} out of 2 (based on the top 25 players who are opted into war)
         `,
       )
       .addFields(formatFieldData);
