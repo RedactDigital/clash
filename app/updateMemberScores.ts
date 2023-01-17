@@ -20,7 +20,7 @@ export const updateMemberScores = async (clan: Clan): Promise<void> => {
 
     for (const member of members) {
       const totalAttacks = member.warAttacks.filter((attack) => attack.duration > 0).length;
-      const totalWars = [...new Set(member.warAttacks.map((attack) => attack.clanWarId))].length;
+      const totalWars = member.warAttacks.length;
       const averageAttacks = round(totalAttacks / 2 / totalWars, 2) * 100; // 2 attacks per war
       const totalStars = member.warAttacks.reduce((acc, attack) => acc + attack.stars, 0);
       const averageStars = round(totalStars / 3 / totalWars, 2) * 100; // 3 stars per war
