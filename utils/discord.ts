@@ -91,12 +91,12 @@ export class Discord {
       .setDescription(
         `
         *Last Updated: ${dayjs().format('MMMM D h:mm A')} - UTC*\n        
-        *If you don't see your name, you are either not opted into war, or you are below the top 25 players.*\n
+        *If you don't see your name, you are either not opted into war, or you are below the top 25 players.*
         **Breakdown of how the score is weighted:**
         ---
         **Average Attack Rate** - 60%
         **Average Stars** - 30%
-        **Average Destruction** - 10%\n
+        **Average Destruction** - 10%
         
         **Average Attack Rate** - ${clansAvgAttackRate}% (based on the top 25 players who are opted into war, and have more than 1 attack)
         **Top 25 Average Attack Rate** - ${top25AvgAttackRate}% (based on the top 25 players who are opted into war)
