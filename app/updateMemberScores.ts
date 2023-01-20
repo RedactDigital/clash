@@ -2,15 +2,24 @@ import { LOG10E, round } from 'mathjs';
 import { Op } from 'sequelize';
 import Clan from '../database/models/Clan.model';
 import ClanMember from '../database/models/ClanMember.model';
+import ClanWar from '../database/models/ClanWar.model';
 import log from '../utils/log';
 
 export const updateMemberScores = async (clan: Clan): Promise<void> => {
   try {
+    /**
+     * Get the clan war id for the current war so we can exclude it from the score
+     */
+    const clanWar = await ClanWar.findOne({
+      where: { clanId: clan.id, state: ['preparation', 'inWar'] },
+    });
+
     const members = await ClanMember.findAll({
       where: { clanId: clan.id, role: { [Op.not]: 'Former Member' } },
       include: [
         {
           association: 'warAttacks',
+          where: { clanWarId: { [Op.not]: clanWar?.id } },
           required: false,
         },
       ],
