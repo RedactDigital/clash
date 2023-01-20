@@ -296,6 +296,12 @@ export class Discord {
         order: [['trophies', 'DESC']],
       });
 
+      const topAverageAttacks = topMembers.reduce((acc, member) => acc + member.averageAttacks, 0);
+      const topAvgAttackRate = round((topAverageAttacks / topMembers.length / 100) * 2, 2);
+
+      const totalAverageAttacks = lineup.reduce((acc, member) => acc + member.averageAttacks, 0);
+      const totalAvgAttackRate = round((totalAverageAttacks / lineup.length / 100) * 2, 2);
+
       let count = 0;
       const formatData = await lineup.map((member) => {
         const { name, score, donationsRatio, averageStars, averageDestruction, averageAttacks } = member;
@@ -320,10 +326,12 @@ export class Discord {
           `
         *Last Updated: ${dayjs().format('MMMM D h:mm A')} - UTC*        
         ---
-        **Average Attack Rate** - 40%
-        **Average Stars** - 35%
-        **Average Destruction** - 15%
-        **Total Donations This Season** - 10%
+        **Average Attack Rate** - 60%
+        **Average Stars** - 30%
+        **Average Destruction** - 10%
+        
+        **Top Average Attack Rate** - ${topAvgAttackRate} out of 2 (based on the top players who are have a score greater than 0)
+        **Total Average Attack Rate** - ${totalAvgAttackRate} out of 2 (based on all players in the war lineup)
         `,
         )
         .addFields(formatData);
