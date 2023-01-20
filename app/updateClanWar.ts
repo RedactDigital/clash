@@ -104,7 +104,7 @@ export const updateClanWar = async (clan: Clan): Promise<void> => {
     /**
      * Once the war is inWar, we can start updating the war attacks periodically
      */
-    if (warRes.state === 'inWar') {
+    if (warRes.state === 'inWar' || warRes.state === 'warEnded') {
       for (const member of warRes.clan.members) {
         /**
          * If the member has no attacks, the API doesn't return an array of attacks
