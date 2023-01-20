@@ -14,7 +14,7 @@ export interface ClanMemberWarAttackAttributes {
   updatedAt: Date;
 }
 
-interface ClanMemberWarAttackCreationAttributes extends Optional<ClanMemberWarAttackAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+interface ClanMemberWarAttackCreationAttributes extends Optional<ClanMemberWarAttackAttributes, 'id' | 'defenderTag' | 'createdAt' | 'updatedAt'> {}
 
 export default class ClanMemberWarAttack
   extends Model<ClanMemberWarAttackAttributes, ClanMemberWarAttackCreationAttributes>

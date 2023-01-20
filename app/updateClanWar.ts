@@ -79,20 +79,18 @@ export const updateClanWar = async (clan: Clan): Promise<void> => {
           await ClanMemberWarAttack.create({
             memberId: member.id,
             clanWarId: war.id,
-            defenderTag: member.tag,
             stars: 0,
             destructionPercentage: 0,
             duration: 0,
-            order: 0,
+            order: 1,
           });
           await ClanMemberWarAttack.create({
             memberId: member.id,
             clanWarId: war.id,
-            defenderTag: member.tag,
             stars: 0,
             destructionPercentage: 0,
             duration: 0,
-            order: 0,
+            order: 2,
           });
         }
         log.info(`Created war lineup for ${clan.name}`);
