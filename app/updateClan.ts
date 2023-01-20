@@ -70,7 +70,7 @@ export const updateClan = async (clan: Clan): Promise<void> => {
           clanId: clan.id,
           tag: member.tag.replace('#', ''),
           name: member.name,
-          role: member.role,
+          role: translateRole(member.role),
           expLevel: member.expLevel,
           league: member.league,
           trophies: member.trophies,
@@ -87,7 +87,7 @@ export const updateClan = async (clan: Clan): Promise<void> => {
           clanId: clan.id,
           tag: member.tag.replace('#', ''),
           name: member.name,
-          role: member.role,
+          role: translateRole(member.role),
           expLevel: member.expLevel,
           league: member.league,
           trophies: member.trophies,
@@ -117,4 +117,19 @@ const calculateDonationsRatio = (donations: number, donationsReceived: number): 
   if (donationsReceived !== 0 && donations !== 0)
     donationsRatio = `${round(fraction(donations, donationsReceived)).n}:${round(fraction(donations, donationsReceived)).d}`;
   return donationsRatio as string;
+};
+
+const translateRole = (role: string): ClanMember['role'] => {
+  switch (role) {
+    case 'member':
+      return 'Member';
+    case 'admin':
+      return 'Elder';
+    case 'coLeader':
+      return 'Co-Leader';
+    case 'leader':
+      return 'Leader';
+    default:
+      return 'Member';
+  }
 };
