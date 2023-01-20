@@ -269,12 +269,16 @@ export class Discord {
         return;
       }
 
+      let lineup = [];
+
       // find top members by score and sort by trophies
       const topMembers = await ClanMember.findAll({
         where: { role: { [Op.not]: 'Former Member' }, warPreference: 'in', score: { [Op.gt]: 0 } },
         order: [['score', 'DESC']],
         limit: +content,
       });
+
+      for (const member of topMembers) lineup.push(member);
 
       /**
        * Find the length of the top members, and if it is less than the number provided, then add the oldest members to the lineup.
@@ -286,15 +290,13 @@ export class Discord {
           limit: +content - topMembers.length,
         });
 
-        remainingMembers.forEach((member) => {
-          topMembers.push(member);
-        });
+        for (const member of remainingMembers) lineup.push(member);
       }
 
-      const lineup = await ClanMember.findAll({
-        where: { id: topMembers.map((member) => member.id) },
-        order: [['trophies', 'DESC']],
-      });
+      /**
+       * Order the lineup by trophies desc
+       */
+      lineup = lineup.sort((a, b) => b.trophies - a.trophies);
 
       const topAverageAttacks = topMembers.reduce((acc, member) => acc + member.averageAttacks, 0);
       const topAvgAttackRate = round((topAverageAttacks / topMembers.length / 100) * 2, 2);
