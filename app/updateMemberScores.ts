@@ -14,12 +14,16 @@ export const updateMemberScores = async (clan: Clan): Promise<void> => {
       where: { clanId: clan.id, state: ['preparation', 'inWar'] },
     });
 
+    let query = {} as { clanWarId: { [Op.not]: number } };
+
+    if (clanWar) query.clanWarId = { [Op.not]: clanWar.id };
+
     const members = await ClanMember.findAll({
       where: { clanId: clan.id, role: { [Op.not]: 'Former Member' } },
       include: [
         {
           association: 'warAttacks',
-          where: { clanWarId: { [Op.not]: clanWar?.id } },
+          where: query,
           required: false,
         },
       ],
@@ -34,6 +38,8 @@ export const updateMemberScores = async (clan: Clan): Promise<void> => {
       const totalStars = member.warAttacks.reduce((acc, attack) => acc + attack.stars, 0);
       const averageStars = round(totalStars / 6 / totalWars, 2) * 100; // 6 stars per war
       const averageDestruction = round(member.warAttacks.reduce((acc, attack) => acc + attack.destructionPercentage, 0) / totalAttacks, 2);
+
+      if (member.name === 'EXES') console.log(totalAttacks);
 
       const weights = {
         attacks: 0.6,
