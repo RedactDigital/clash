@@ -4,6 +4,7 @@ import Clan from '../database/models/Clan.model';
 import ClanMember from '../database/models/ClanMember.model';
 import ClanWar from '../database/models/ClanWar.model';
 import log from '../utils/log';
+import dayjs from 'dayjs';
 
 export const updateMemberScores = async (clan: Clan): Promise<void> => {
   try {
@@ -14,7 +15,12 @@ export const updateMemberScores = async (clan: Clan): Promise<void> => {
       where: { clanId: clan.id, state: ['preparation', 'inWar'] },
     });
 
-    let query = {} as { clanWarId: { [Op.not]: number } };
+    let query = {
+      createdAt: { [Op.gte]: dayjs('01 April 2023').toDate() },
+    } as {
+      clanWarId: { [Op.not]: number };
+      createdAt: { [Op.gte]: Date };
+    } as any;
 
     if (clanWar) query.clanWarId = { [Op.not]: clanWar.id };
 
