@@ -6,7 +6,7 @@
   "scripts": {
     "test": "NODE_ENV=test jest --detectOpenHandles --forceExit",
     "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx ./",
-    "build": "tsc",
+    "build": "npx tsc",
     "dev": "nodemon app.ts",
     "prod": "npm run build && node dist/app.js",
     "migrate": "npx sequelize db:migrate",
