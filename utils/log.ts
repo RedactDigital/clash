@@ -1,6 +1,7 @@
 import { createLogger, format, transports, addColors } from 'winston';
 import path from 'path';
 import config from '../config/config';
+import DatadogWinston from 'datadog-winston';
 
 const customLevels = {
   levels: {
@@ -55,6 +56,13 @@ const prodLogger = createLogger({
     new transports.File({
       filename: path.join(__dirname, '../storage/logs/info.log'),
       format: logFormatter,
+    }),
+    new DatadogWinston({
+      apiKey: config.get('datadog.apiKey'),
+      ddsource: 'nodejs',
+      ddtags: `env:${config.get('env')}`,
+      service: config.get('api.name'),
+      hostname: os.hostname(),
     }),
   ],
 

@@ -61,6 +61,15 @@ const config = convict({
       sensitive: true,
     },
   },
+  datadog: {
+    apiKey: {
+      doc: 'The datadog api key.',
+      format: String,
+      default: 'key',
+      env: 'DATADOG_API_KEY',
+      sensitive: true,
+    },
+  },
 });
 
 config.validate({ allowed: 'strict' });
