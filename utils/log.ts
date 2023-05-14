@@ -44,10 +44,19 @@ const logFormatter = format.combine(
 addColors(customLevels.colors);
 
 const devLogger = createLogger({
-  transports: new transports.Console({
-    format: consoleFormatter,
-    level: 'info',
-  }),
+  transports: [
+    new transports.Console({
+      format: consoleFormatter,
+      level: 'info',
+    }),
+    new DatadogWinston({
+      apiKey: config.get('datadog.apiKey'),
+      ddsource: 'nodejs',
+      ddtags: `env:${config.get('env')}`,
+      service: 'zero-wars-bot',
+      hostname: os.hostname(),
+    }),
+  ],
   levels: customLevels.levels,
 });
 
