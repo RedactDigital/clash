@@ -8,8 +8,6 @@ services:
     container_name: zero-wars-api
     restart: unless-stopped
     working_dir: /usr/src/app
-    labels:
-      - 'com.datadoghq.ad.logs=''[{"source": "nodejs", "service": "zero-wars-api"}]'
     command: |
       bash -c "
         npm install

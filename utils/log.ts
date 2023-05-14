@@ -2,6 +2,7 @@ import { createLogger, format, transports, addColors } from 'winston';
 import path from 'path';
 import config from '../config/config';
 import DatadogWinston from 'datadog-winston';
+import os from 'os';
 
 const customLevels = {
   levels: {
@@ -53,15 +54,15 @@ const devLogger = createLogger({
 const prodLogger = createLogger({
   level: 'info',
   transports: [
-    new transports.File({
-      filename: path.join(__dirname, '../storage/logs/info.log'),
-      format: logFormatter,
-    }),
+    // new transports.File({
+    //   filename: path.join(__dirname, '../storage/logs/info.log'),
+    //   format: logFormatter,
+    // }),
     new DatadogWinston({
       apiKey: config.get('datadog.apiKey'),
       ddsource: 'nodejs',
       ddtags: `env:${config.get('env')}`,
-      service: config.get('api.name'),
+      service: 'zero-wars-bot',
       hostname: os.hostname(),
     }),
   ],
