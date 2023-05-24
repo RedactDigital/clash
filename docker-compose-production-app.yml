@@ -17,4 +17,5 @@ services:
 
 networks:
   zero-wars-network:
-    driver: bridge
+    driver: overlay
+    attachable: true
