@@ -1,4 +1,4 @@
-import { Sequelize, Options, Dialect } from 'sequelize';
+import { Sequelize, Options } from 'sequelize';
 import config from '../../config/config';
 
 let sequelizeConfig: Options = {

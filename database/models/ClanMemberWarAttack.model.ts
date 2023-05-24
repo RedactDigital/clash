@@ -21,14 +21,23 @@ export default class ClanMemberWarAttack
   implements ClanMemberWarAttackAttributes
 {
   declare readonly id: ClanMemberWarAttackAttributes['id'];
+
   declare readonly memberId: ClanMemberWarAttackAttributes['memberId'];
+
   declare readonly clanWarId: ClanMemberWarAttackAttributes['clanWarId'];
+
   declare readonly defenderTag: ClanMemberWarAttackAttributes['defenderTag'];
+
   declare readonly stars: ClanMemberWarAttackAttributes['stars'];
+
   declare readonly destructionPercentage: ClanMemberWarAttackAttributes['destructionPercentage'];
+
   declare readonly duration: ClanMemberWarAttackAttributes['duration'];
+
   declare readonly order: ClanMemberWarAttackAttributes['order'];
+
   declare readonly createdAt: ClanMemberWarAttackAttributes['createdAt'];
+
   declare readonly updatedAt: ClanMemberWarAttackAttributes['updatedAt'];
 }
 

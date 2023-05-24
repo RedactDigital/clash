@@ -1,5 +1,4 @@
 import { Model, DataTypes, Optional } from 'sequelize';
-import Clan from './Clan.model';
 import ClanMemberWarAttack from './ClanMemberWarAttack.model';
 import { sequelize } from './index';
 
@@ -33,27 +32,49 @@ interface ClanMemberCreationAttributes extends Optional<ClanMemberAttributes, 'i
 
 export default class ClanMember extends Model<ClanMemberAttributes, ClanMemberCreationAttributes> implements ClanMemberAttributes {
   declare readonly id: ClanMemberAttributes['id'];
+
   declare readonly clanId: ClanMemberAttributes['clanId'];
+
   declare readonly tag: ClanMemberAttributes['tag'];
+
   declare readonly name: ClanMemberAttributes['name'];
+
   declare readonly role: ClanMemberAttributes['role'];
+
   declare readonly notes: ClanMemberAttributes['notes'];
+
   declare readonly expLevel: ClanMemberAttributes['expLevel'];
+
   declare readonly league: ClanMemberAttributes['league'];
+
   declare readonly trophies: ClanMemberAttributes['trophies'];
+
   declare readonly versusTrophies: ClanMemberAttributes['versusTrophies'];
+
   declare readonly donations: ClanMemberAttributes['donations'];
+
   declare readonly donationsReceived: ClanMemberAttributes['donationsReceived'];
+
   declare readonly donationsRatio: ClanMemberAttributes['donationsRatio'];
+
   declare readonly warPreference: ClanMemberAttributes['warPreference'];
+
   declare readonly averageAttacks: ClanMemberAttributes['averageAttacks'];
+
   declare readonly totalAttacks: ClanMemberAttributes['totalAttacks'];
+
   declare readonly totalWars: ClanMemberAttributes['totalWars'];
+
   declare readonly totalStars: ClanMemberAttributes['totalStars'];
+
   declare readonly averageStars: ClanMemberAttributes['averageStars'];
+
   declare readonly averageDestruction: ClanMemberAttributes['averageDestruction'];
+
   declare readonly score: ClanMemberAttributes['score'];
+
   declare readonly createdAt: ClanMemberAttributes['createdAt'];
+
   declare readonly updatedAt: ClanMemberAttributes['updatedAt'];
 
   declare readonly warAttacks: ClanMemberWarAttack[];

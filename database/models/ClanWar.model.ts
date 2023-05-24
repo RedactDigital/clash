@@ -20,16 +20,27 @@ interface ClanWarCreationAttributes extends Optional<ClanWarAttributes, 'id' | '
 
 export default class ClanWar extends Model<ClanWarAttributes, ClanWarCreationAttributes> implements ClanWarAttributes {
   declare readonly id: ClanWarAttributes['id'];
+
   declare readonly clanId: ClanWarAttributes['clanId'];
+
   declare readonly state: ClanWarAttributes['state'];
+
   declare readonly teamSize: ClanWarAttributes['teamSize'];
+
   declare readonly destructionPercentage: ClanWarAttributes['destructionPercentage'];
+
   declare readonly preparationStartTime: ClanWarAttributes['preparationStartTime'];
+
   declare readonly stars: ClanWarAttributes['stars'];
+
   declare readonly attacks: ClanWarAttributes['attacks'];
+
   declare readonly startTime: ClanWarAttributes['startTime'];
+
   declare readonly endTime: ClanWarAttributes['endTime'];
+
   declare readonly createdAt: ClanWarAttributes['createdAt'];
+
   declare readonly updatedAt: ClanWarAttributes['updatedAt'];
 }
 

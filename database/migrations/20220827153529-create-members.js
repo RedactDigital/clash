@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
   async up(queryInterface, Sequelize) {
     /**
@@ -43,10 +41,10 @@ module.exports = {
       },
       league: {
         type: Sequelize.TEXT,
-        set: function (val) {
+        set(val) {
           this.setDataValue('league', JSON.stringify(val));
         },
-        get: function () {
+        get() {
           return JSON.parse(this.getDataValue('league'));
         },
       },

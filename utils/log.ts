@@ -1,5 +1,4 @@
 import { createLogger, format, transports, addColors } from 'winston';
-import path from 'path';
 import config from '../config/config';
 import DatadogWinston from 'datadog-winston';
 import os from 'os';
@@ -30,16 +29,16 @@ const consoleFormatter = format.combine(
   }),
 );
 
-const logFormatter = format.combine(
-  // Only difference between this and console is color is removed
-  format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-  format.splat(),
-  format.printf((info: any) => {
-    const { timestamp, level, message, ...meta } = info;
+// const logFormatter = format.combine(
+//   // Only difference between this and console is color is removed
+//   format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+//   format.splat(),
+//   format.printf((info: any) => {
+//     const { timestamp, level, message, ...meta } = info;
 
-    return `${timestamp} [${level}]: ${message} \n${Object.keys(meta).length ? JSON.stringify(meta, null, 2) : ''}`;
-  }),
-);
+//     return `${timestamp} [${level}]: ${message} \n${Object.keys(meta).length ? JSON.stringify(meta, null, 2) : ''}`;
+//   }),
+// );
 
 addColors(customLevels.colors);
 

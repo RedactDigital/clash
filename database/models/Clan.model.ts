@@ -34,30 +34,55 @@ interface ClanCreationAttributes extends Optional<ClanAttributes, 'id' | 'create
 
 export default class Clan extends Model<ClanAttributes, ClanCreationAttributes> implements ClanAttributes {
   declare readonly id: ClanAttributes['id'];
+
   declare readonly tag: ClanAttributes['tag'];
+
   declare readonly name: ClanAttributes['name'];
+
   declare readonly type: ClanAttributes['type'];
+
   declare readonly description: ClanAttributes['description'];
+
   declare readonly location: ClanAttributes['location'];
+
   declare readonly badgeUrls: ClanAttributes['badgeUrls'];
+
   declare readonly clanLevel: ClanAttributes['clanLevel'];
+
   declare readonly clanPoints: ClanAttributes['clanPoints'];
+
   declare readonly clanVersusPoints: ClanAttributes['clanVersusPoints'];
+
   declare readonly requiredTrophies: ClanAttributes['requiredTrophies'];
+
   declare readonly warFrequency: ClanAttributes['warFrequency'];
+
   declare readonly warWinStreak: ClanAttributes['warWinStreak'];
+
   declare readonly warWins: ClanAttributes['warWins'];
+
   declare readonly warTies: ClanAttributes['warTies'];
+
   declare readonly warLosses: ClanAttributes['warLosses'];
+
   declare readonly isWarLogPublic: ClanAttributes['isWarLogPublic'];
+
   declare readonly warLeague: ClanAttributes['warLeague'];
+
   declare readonly memberCount: ClanAttributes['memberCount'];
+
   declare readonly labels: ClanAttributes['labels'];
+
   declare readonly requiredVersusTrophies: ClanAttributes['requiredVersusTrophies'];
+
   declare readonly requiredTownhallLevel: ClanAttributes['requiredTownhallLevel'];
+
   declare readonly clanCapital: ClanAttributes['clanCapital'];
+
   declare readonly chatLanguage: ClanAttributes['chatLanguage'];
+
   declare readonly createdAt: ClanAttributes['createdAt'];
+
   declare readonly updatedAt: ClanAttributes['updatedAt'];
 
   declare readonly members: ClanMember[];

@@ -1,16 +1,11 @@
-# Initializes a new nodejs project with docker
-
-version: '3.7'
 services:
-  app:
+  clash-of-clans:
     image: node:19.8.1
-    user: 1000:1000
-    container_name: zero-wars-api
-    restart: unless-stopped
     working_dir: /usr/src/app
     command: |
       bash -c "
-        npm install
+        npm install --no-audit
+        npm run build
         npm run prod
       "
     ports:
