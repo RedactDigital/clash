@@ -29,20 +29,9 @@ const consoleFormatter = format.combine(
   }),
 );
 
-// const logFormatter = format.combine(
-//   // Only difference between this and console is color is removed
-//   format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-//   format.splat(),
-//   format.printf((info: any) => {
-//     const { timestamp, level, message, ...meta } = info;
-
-//     return `${timestamp} [${level}]: ${message} \n${Object.keys(meta).length ? JSON.stringify(meta, null, 2) : ''}`;
-//   }),
-// );
-
 addColors(customLevels.colors);
 
-const devLogger = createLogger({
+const log = createLogger({
   transports: [
     new transports.Console({
       format: consoleFormatter,
@@ -58,30 +47,5 @@ const devLogger = createLogger({
   ],
   levels: customLevels.levels,
 });
-
-const prodLogger = createLogger({
-  level: 'info',
-  transports: [
-    // new transports.File({
-    //   filename: path.join(__dirname, '../storage/logs/info.log'),
-    //   format: logFormatter,
-    // }),
-    new DatadogWinston({
-      apiKey: config.get('datadog.apiKey'),
-      ddsource: 'nodejs',
-      ddtags: `env:${config.get('env')}`,
-      service: 'zero-wars-bot',
-      hostname: os.hostname(),
-    }),
-  ],
-
-  levels: customLevels.levels,
-});
-
-let log: any = {};
-
-if (config.get('env') !== 'production') log = devLogger;
-
-if (config.get('env') === 'production') log = prodLogger;
 
 export default log;
