@@ -1,7 +1,8 @@
 services:
   clash-of-clans:
-    image: node:19.8.1
+    image: node:20.0-bullseye-slim
     working_dir: /usr/src/app
+    user: node
     command: |
       bash -c "
         npm install --no-audit

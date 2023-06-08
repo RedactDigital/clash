@@ -3,8 +3,8 @@
 version: '3.7'
 services:
   app:
-    image: node:19.8.1
-    user: 1000:1000
+    image: node:20.0-bullseye-slim
+    user: node
     container_name: zero-wars-api
     restart: unless-stopped
     working_dir: /usr/src/app
