@@ -71,4 +71,4 @@ RUN chmod +x entrypoint.sh
 
 ENTRYPOINT ["./entrypoint.sh"]
 
-# CMD ["npm", "run", "start:prod"]
+CMD ["npm", "run", "start:prod"]
