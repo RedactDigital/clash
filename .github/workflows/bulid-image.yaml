@@ -24,7 +24,15 @@ jobs:
       packages: write # Needed to push docker image to ghcr.io
       contents: read # Needed to read code in repository
 
+    outputs:
+      repo: ${{ steps.set-var.outputs.repo }}
+
     steps:
+      - id: set-var
+        uses: ASzc/change-string-case-action@v5
+        with:
+          string: ${{ github.repository }}
+
       # Docker buildx is useful for caching images
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -83,6 +91,11 @@ jobs:
       repo: ${{ steps.set-var.outputs.repo }}
 
     steps:
+      - id: set-var
+        uses: ASzc/change-string-case-action@v5
+        with:
+          string: ${{ github.repository }}
+
       # Docker buildx is useful for caching images
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -93,11 +106,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.token }}
-
-      - id: set-var
-        uses: ASzc/change-string-case-action@v5
-        with:
-          string: ${{ github.repository }}
 
       - name: Build and Push Image to ghcr.io
         uses: docker/build-push-action@v4
