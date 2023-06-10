@@ -18,7 +18,7 @@ jobs:
   # This image is used throught the entire github workflow until it is built for final deployment
   build-test-image:
     name: Build Image for Testing
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     permissions:
       packages: write # Needed to push docker image to ghcr.io
@@ -57,7 +57,7 @@ jobs:
   # We are going to run unit tests, integration tests, CVE scanning, smoke tests, and linting in parallel
   lint:
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build-test-image]
 
     permissions:
@@ -77,15 +77,12 @@ jobs:
   # We are going to build an image specifically for final deployment and push it to ghcr.io (GitHub Container Registry)
   build-final-image:
     name: Build Image for Deployment (Staging)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [lint]
 
     permissions:
       packages: write # Needed to push docker image to ghcr.io
       contents: read # Needed to read code in repository
-
-    outputs:
-      repo: ${{ steps.set-var.outputs.repo }}
 
     steps:
       - id: set-var
