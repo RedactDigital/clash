@@ -26,7 +26,7 @@ const config = convict({
       doc: 'The database name.',
       format: String,
       default: 'zerowars',
-      env: 'DATABASE_NAME',
+      env: 'CLASH_OF_CLANS_DATABASE_NAME',
     },
     port: {
       doc: 'The database port.',

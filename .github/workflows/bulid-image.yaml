@@ -77,7 +77,7 @@ jobs:
           password: ${{ github.token }}
 
       - name: Run Linting
-        run: docker run --rm ghcr.io/${{ github.repository }}:test npm run lint
+        run: docker run --rm ghcr.io/${{ steps.set-var.outputs.lowercase }}:test npm run lint
 
   # We are going to build an image specifically for final deployment and push it to ghcr.io (GitHub Container Registry)
   build-final-image:
