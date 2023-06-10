@@ -1,9 +1,9 @@
 import { round } from 'mathjs';
 import { Op } from 'sequelize';
-import Clan from '../database/models/Clan.model';
-import ClanMember from '../database/models/ClanMember.model';
-import ClanWar from '../database/models/ClanWar.model';
-import log from '../utils/log';
+import Clan from './database/models/Clan.model';
+import ClanMember from './database/models/ClanMember.model';
+import ClanWar from './database/models/ClanWar.model';
+import log from './utils/log';
 import dayjs from 'dayjs';
 
 export const updateMemberScores = async (clan: Clan): Promise<void> => {

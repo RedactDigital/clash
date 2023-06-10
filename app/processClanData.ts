@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 dayjs.extend(require('dayjs/plugin/utc'));
-import Clan from '../database/models/Clan.model';
-import { Discord } from '../utils/discord';
-import log from '../utils/log';
+import Clan from './database/models/Clan.model';
+import { Discord } from './utils/discord';
+import log from './utils/log';
 import { updateClan } from './updateClan';
 import { updateClanWar } from './updateClanWar';
 import { updateMemberScores } from './updateMemberScores';

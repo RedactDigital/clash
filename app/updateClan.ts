@@ -1,8 +1,8 @@
 import { fraction, round } from 'mathjs';
-import config from '../config/config';
-import Clan from '../database/models/Clan.model';
-import ClanMember from '../database/models/ClanMember.model';
-import log from '../utils/log';
+import config from './config/config';
+import Clan from './database/models/Clan.model';
+import ClanMember from './database/models/ClanMember.model';
+import log from './utils/log';
 
 export const updateClan = async (clan: Clan): Promise<void> => {
   try {

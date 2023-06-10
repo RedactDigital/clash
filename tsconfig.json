@@ -16,5 +16,5 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["config/**/*.ts", "utils/**/*.ts", "database/**/*.ts", "database/**/*.js", "config/config.ts", "**/*.ts"]
+  "include": ["**/*.js", "**/*.ts"]
 }

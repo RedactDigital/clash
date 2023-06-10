@@ -3,18 +3,15 @@
 version: '3.7'
 services:
   app:
-    image: node:20.0-bullseye-slim
-    user: node
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    image: zero-wars-api
     container_name: zero-wars-api
     restart: unless-stopped
-    working_dir: /usr/src/app
-    command: sh -c "npm install --no-audit && npm run dev"
+    command: sh -c "npm install --no-audit --no-fund && npm run start:dev"
     ports:
       - '5000:5000'
     volumes:
       - ./:/usr/src/app
-    networks:
-      - zero-wars-network
-networks:
-  zero-wars-network:
-    driver: bridge

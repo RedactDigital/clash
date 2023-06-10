@@ -1,11 +1,12 @@
 require('dotenv').config();
 import { CronJob } from 'cron';
 import { processClanData } from './app/processClanData';
-import { Discord } from './utils/discord';
-import log from './utils/log';
-import schedule from './utils/schedule';
+import { Discord } from './app/utils/discord';
+import schedule from './app/utils/schedule';
+import log from './app/utils/log';
+import config from './app/config/config';
 
-log.info('Starting cron jobs');
+log.info(`Starting clash of clans app on ${config.get('env')} environment`);
 
 const job = new CronJob(schedule.everyFiveMinutes, processClanData);
 

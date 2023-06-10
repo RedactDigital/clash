@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
-import config from '../config/config';
-import Clan from '../database/models/Clan.model';
-import ClanMember from '../database/models/ClanMember.model';
-import ClanMemberWarAttack from '../database/models/ClanMemberWarAttack.model';
-import ClanWar from '../database/models/ClanWar.model';
-import log from '../utils/log';
+import config from './config/config';
+import Clan from './database/models/Clan.model';
+import ClanMember from './database/models/ClanMember.model';
+import ClanMemberWarAttack from './database/models/ClanMemberWarAttack.model';
+import ClanWar from './database/models/ClanWar.model';
+import log from './utils/log';
 
 export const updateClanWar = async (clan: Clan): Promise<void> => {
   try {
