@@ -48,14 +48,14 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ghcr.io/${{ github.repository }}:test
+          tags: ghcr.io/${{ steps.set-var.outputs.lowercase }}:test
           cache-from: type=gha # This will use the cached image from the last time we built it (Caching requires buildx done above)
           cache-to: type=gha,mode=max # This will cache the image for the next time we build it (max means it will cache all layers)
           target: development # This is the target stage in the Dockerfile
           labels: |
             org.opencontainers.image.title=Test Image
             org.opencontainers.image.description=Image used for testing
-            org.opencontainers.image.source=ghcr.io/${{ github.repository }}
+            org.opencontainers.image.source=ghcr.io/${{ steps.set-var.outputs.lowercase }}
 
   # We are going to run unit tests, integration tests, CVE scanning, smoke tests, and linting in parallel
   lint:
