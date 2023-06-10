@@ -8,8 +8,10 @@ import config from './app/config/config';
 
 log.info(`Starting clash of clans app on ${config.get('env')} environment`);
 
-const job = new CronJob(schedule.everyFiveMinutes, processClanData);
+// const job = new CronJob(schedule.everyFiveMinutes, processClanData);
 
-new Discord(true);
+// new Discord(true);
 
-job.start();
+// job.start();
+
+console.log(process.env.CLASH_OF_CLANS_DISCORD_TOKEN);
