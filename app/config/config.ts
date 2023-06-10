@@ -57,7 +57,7 @@ const config = convict({
       doc: 'The Discord bot token.',
       format: String,
       default: '',
-      env: 'CLAH_OF_CLANS_DISCORD_TOKEN',
+      env: 'CLASH_OF_CLANS_DISCORD_TOKEN',
       sensitive: true,
     },
   },
