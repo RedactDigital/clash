@@ -44,7 +44,7 @@ ENV USER node
 # Install the required packages
 RUN apt update && apt upgrade -y && apt install -y --no-install-recommends \
     vim \
-    cron
+    && npm install -g npm@9.7.1
 
 # Install Cleanup
 RUN echo "alias ll='ls -alF'" >> /home/node/.bashrc \
