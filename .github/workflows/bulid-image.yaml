@@ -64,6 +64,11 @@ jobs:
       packages: read # Needed to pull docker image from ghcr.io
 
     steps:
+      - id: set-var
+        uses: ASzc/change-string-case-action@v5
+        with:
+          string: ${{ github.repository }}
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
