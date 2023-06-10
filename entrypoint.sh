@@ -16,3 +16,6 @@ if [ -d "$PATH_SECRETS" ]; then
         echo "$secret='$(cat $PATH_SECRETS/$secret)'" >>.env
     done
 fi
+
+# Run the command provided by the user
+exec "$@"
