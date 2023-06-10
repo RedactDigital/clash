@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Add docker secrets to .env file
 PATH_SECRETS=/run/secrets

@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: development
-    image: zero-wars-api
+    image: ghcr.io/redactdigital/clash-of-clans:latest
     container_name: zero-wars-api
     restart: unless-stopped
     command: sh -c "npm install --no-audit --no-fund && npm run start:dev"
