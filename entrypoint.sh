@@ -16,9 +16,9 @@ if [ -d "$PATH_SECRETS" ]; then
     done
 fi
 
-# If a command is provided, run it else run the default command
+# If a command is provided, run it else keep the container running for debugging
 if [ -z "$1" ]; then
-    echo "No command provided. Running default command"
+    tail -f /dev/null
 else
     echo "Running command: $@"
 fi
