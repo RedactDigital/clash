@@ -6,12 +6,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: development
+      target: production
     image: ghcr.io/redactdigital/clash-of-clans:latest
     container_name: zero-wars-api
     restart: unless-stopped
-    command: sh -c "npm install --no-audit --no-fund && npm run start:dev"
+    # command: sh -c "npm install --no-audit --no-fund && npm run start:dev"
+    entrypoint: ["./entrypoint.sh"]
     ports:
       - '5000:5000'
-    volumes:
-      - ./:/usr/src/app
+    # volumes:
+    #   - ./:/usr/src/app

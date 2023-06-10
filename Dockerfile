@@ -67,8 +67,8 @@ COPY --chown=${USER}:${USER} --from=development /usr/src/app/dist ./
 RUN npm install --only=production --no-audit --no-fund
 
 COPY --chown=${USER}:${USER} entrypoint.sh entrypoint.sh
-RUN chmod +x entrypoint.sh
+RUN chmod 777 entrypoint.sh
 
-ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
 
-CMD ["npm", "run", "start:prod"]
+# CMD ["npm", "run", "start:prod"]
