@@ -1,15 +1,30 @@
-require('dotenv').config();
-import { CronJob } from 'cron';
-import { processClanData } from './app/processClanData';
-import { Discord } from './app/utils/discord';
-import schedule from './app/utils/schedule';
+import { Client } from 'discord.js';
 import log from './app/utils/log';
-import config from './app/config/config';
+import { intents } from './app/utils/discordIntents';
+import { clientReadyEvent } from './app/events/clientReady';
+import { errorEvent } from './app/events/error';
+import { messageCreateEvent } from './app/events/messageCreate';
+import { config } from './app/config/index.config';
 
-log.info(`Starting clash of clans app on ${config.get('env')} environment`);
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
+(async (): Promise<void> => {
+  try {
+    log.info(`Starting ${config.get('app.name')} on ${config.get('app.env')} environment`);
 
-const job = new CronJob(schedule.everyFiveMinutes, processClanData);
+    const discordClient = new Client({ intents });
 
-new Discord(true);
+    clientReadyEvent(discordClient);
 
-job.start();
+    messageCreateEvent(discordClient);
+
+    errorEvent(discordClient);
+
+    log.info(config.get('discord.token'));
+
+    await discordClient.login(config.get('discord.token'));
+
+    // New Discord(true);
+  } catch (error) {
+    log.error('Error:', error);
+  }
+})();

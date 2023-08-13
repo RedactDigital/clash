@@ -1,10 +1,67 @@
 import dayjs from 'dayjs';
-import config from './config/config';
-import Clan from './database/models/Clan.model';
+import { config } from './config/index.config';
+import type Clan from './database/models/Clan.model';
 import ClanMember from './database/models/ClanMember.model';
 import ClanMemberWarAttack from './database/models/ClanMemberWarAttack.model';
 import ClanWar from './database/models/ClanWar.model';
 import log from './utils/log';
+
+enum WarState {
+  NOT_IN_WAR = 'notInWar',
+  IN_MATCHMAKING = 'inMatchmaking',
+  PREPARATION = 'preparation',
+  IN_WAR = 'inWar',
+  ENDED = 'warEnded',
+}
+
+interface WarClan {
+  tag: string;
+  name: string;
+  badgeUrls: {
+    small: string;
+    large: string;
+    medium: string;
+  };
+  clanLevel: number;
+  attacks: number;
+  stars: number;
+  destructionPercentage: number;
+  expEarned: number;
+  members: Array<{
+    tag: string;
+    name: string;
+    townhallLevel: number;
+    mapPosition: number;
+    opponentAttacks: number;
+    bestOpponentAttack: {
+      order: number;
+      attackerTag: string;
+      defenderTag: string;
+      stars: number;
+      destructionPercentage: number;
+      duration: number;
+    };
+    attacks: Array<{
+      order: number;
+      attackerTag: string;
+      defenderTag: string;
+      stars: number;
+      destructionPercentage: number;
+      duration: number;
+    }>;
+  }>;
+}
+
+interface ClanWarResponse {
+  clan: WarClan;
+  opponent: WarClan;
+  teamSize: number;
+  attacksPerMember: number;
+  startTime: string;
+  endTime: string;
+  preparationStartTime: string;
+  state: WarState;
+}
 
 export const updateClanWar = async (clan: Clan): Promise<void> => {
   try {
@@ -18,9 +75,9 @@ export const updateClanWar = async (clan: Clan): Promise<void> => {
         authorization: `Bearer ${config.get('clashOfClans.apiKey')}`,
       },
     });
-    const warRes = await warReq.json();
+    const warRes = <ClanWarResponse>await warReq.json();
 
-    if (!warRes || !warRes.state || warRes.state === 'notInWar') {
+    if (warRes.state === WarState.NOT_IN_WAR) {
       log.info(`Clan ${clan.name} is not in war`);
       return;
     }
@@ -31,7 +88,7 @@ export const updateClanWar = async (clan: Clan): Promise<void> => {
         clanId: clan.id,
         state: warRes.state,
         teamSize: warRes.teamSize,
-        destructionPercentage: warRes.clan.destructionPercentage,
+        destructionPercentage: String(warRes.clan.destructionPercentage),
         stars: warRes.clan.stars,
         attacks: warRes.clan.attacks,
         preparationStartTime: formatTimestamp(warRes.startTime),
@@ -45,7 +102,7 @@ export const updateClanWar = async (clan: Clan): Promise<void> => {
         clanId: clan.id,
         state: warRes.state,
         teamSize: warRes.teamSize,
-        destructionPercentage: warRes.clan.destructionPercentage,
+        destructionPercentage: String(warRes.clan.destructionPercentage),
         stars: warRes.clan.stars,
         attacks: warRes.clan.attacks,
         preparationStartTime: formatTimestamp(warRes.startTime),
@@ -54,23 +111,125 @@ export const updateClanWar = async (clan: Clan): Promise<void> => {
       });
     }
 
+    await createAttacksInDatabase(warRes, war);
+
+    /**
+     * Once the war is inWar, we can start updating the war attacks periodically
+     */
+    await updateWarInfo(warRes, war);
+
+    return void 0;
+  } catch (err) {
+    log.error(`Error while updating war attacks for clan ${clan.name}`, err);
+    return void 0;
+  }
+};
+
+const formatTimestamp = (timestamp: string): Date => {
+  if (!timestamp) throw new Error('No timestamp provided');
+  const [clashFormattedDate] = timestamp.split('T');
+
+  return <Date>(<unknown>dayjs(clashFormattedDate).format('YYYY-MM-DD'));
+};
+
+const updateWarInfo = async (warRes: ClanWarResponse, war: ClanWar): Promise<void> => {
+  if (warRes.state === WarState.IN_WAR || warRes.state === WarState.ENDED) {
+    for (const member of warRes.clan.members) {
+      /**
+       * If the member has no attacks, the API doesn't return an array of attacks
+       * in other words it returns undefined. If it is undefined, do nothing
+       */
+      if (!member.attacks.length) continue;
+
+      /**
+       * We need to get the member id from the database so we can update the correct member
+       */
+      const selectedMember = await ClanMember.findOne({ where: { tag: member.tag.replace('#', '') } });
+      if (!selectedMember) throw new Error('Member not found while updating war attacks');
+
+      /**
+       * If the member has 1 attack, update the first attack in the database
+       */
+      if (member.attacks.length === 1) {
+        await ClanMemberWarAttack.update(
+          {
+            defenderTag: member.attacks[0].defenderTag.replace('#', ''),
+            stars: member.attacks[0].stars,
+            destructionPercentage: member.attacks[0].destructionPercentage,
+            duration: member.attacks[0].duration,
+            order: 1,
+          },
+          {
+            where: {
+              clanWarId: war.id,
+              memberId: selectedMember.id,
+              order: 1,
+            },
+          },
+        );
+      }
+
+      /**
+       * If the member has 2 attacks, update the first and second attack in the database
+       */
+      if (member.attacks.length === 2) {
+        await ClanMemberWarAttack.update(
+          {
+            defenderTag: member.attacks[0].defenderTag.replace('#', ''),
+            stars: member.attacks[0].stars,
+            destructionPercentage: member.attacks[0].destructionPercentage,
+            duration: member.attacks[0].duration,
+            order: 1,
+          },
+          {
+            where: {
+              clanWarId: war.id,
+              memberId: selectedMember.id,
+              order: 1,
+            },
+          },
+        );
+
+        await ClanMemberWarAttack.update(
+          {
+            defenderTag: member.attacks[1].defenderTag.replace('#', ''),
+            stars: member.attacks[1].stars,
+            destructionPercentage: member.attacks[1].destructionPercentage,
+            duration: member.attacks[1].duration,
+            order: 2,
+          },
+          {
+            where: {
+              clanWarId: war.id,
+              memberId: selectedMember.id,
+              order: 2,
+            },
+          },
+        );
+      }
+    }
+  }
+};
+
+const createAttacksInDatabase = async (warRes: ClanWarResponse, war: ClanWar): Promise<void> => {
+  try {
     /**
      * If the status of the war is preparation, we need to create the war lineup
      * so each member has 2 attacks in the database per war
      */
-    if (warRes.state === 'preparation') {
+    if (warRes.state === WarState.PREPARATION) {
       const memberAttacks = await ClanMemberWarAttack.findAll({ where: { clanWarId: war.id } });
       if (memberAttacks.length === 0) {
         /**
          * Get all the members in war, and create an array of their tags so we can get their
          * member id from the database
          */
-        let memberTags = await warRes.clan.members.map((member: any) => member.tag.replace('#', ''));
+        const memberTags = warRes.clan.members.map((member) => member.tag.replace('#', ''));
 
         /**
          * Get all the members in the database with the tags we got from the war data
          */
-        let members = await ClanMember.findAll({ where: { tag: memberTags } });
+        const members = await ClanMember.findAll({ where: { tag: memberTags } });
 
         /**
          * Loop through the members and create 2 attacks for each member
@@ -93,103 +252,9 @@ export const updateClanWar = async (clan: Clan): Promise<void> => {
             order: 2,
           });
         }
-        log.info(`Created war lineup for ${clan.name}`);
       }
-
-      log.info(`Clan ${clan.name} is in war preparation, lineup has already been created`);
     }
-
-    /**
-     * Once the war is inWar, we can start updating the war attacks periodically
-     */
-    if (warRes.state === 'inWar' || warRes.state === 'warEnded') {
-      for (const member of warRes.clan.members) {
-        /**
-         * If the member has no attacks, the API doesn't return an array of attacks
-         * in other words it returns undefined. If it is undefined, do nothing
-         */
-        if (!member.attacks) continue;
-
-        /**
-         * We need to get the member id from the database so we can update the correct member
-         */
-        const selectedMember = await ClanMember.findOne({ where: { tag: member.tag.replace('#', '') } });
-        if (!selectedMember) throw new Error('Member not found while updating war attacks');
-
-        /**
-         * If the member has 1 attack, update the first attack in the database
-         */
-        if (member.attacks.length === 1) {
-          await ClanMemberWarAttack.update(
-            {
-              defenderTag: member.attacks[0].defenderTag.replace('#', ''),
-              stars: member.attacks[0].stars,
-              destructionPercentage: member.attacks[0].destructionPercentage,
-              duration: member.attacks[0].duration,
-              order: 1,
-            },
-            {
-              where: {
-                clanWarId: war.id,
-                memberId: selectedMember.id,
-                order: 1,
-              },
-            },
-          );
-        }
-
-        /**
-         * If the member has 2 attacks, update the first and second attack in the database
-         */
-        if (member.attacks.length === 2) {
-          await ClanMemberWarAttack.update(
-            {
-              defenderTag: member.attacks[0].defenderTag.replace('#', ''),
-              stars: member.attacks[0].stars,
-              destructionPercentage: member.attacks[0].destructionPercentage,
-              duration: member.attacks[0].duration,
-              order: 1,
-            },
-            {
-              where: {
-                clanWarId: war.id,
-                memberId: selectedMember.id,
-                order: 1,
-              },
-            },
-          );
-
-          await ClanMemberWarAttack.update(
-            {
-              defenderTag: member.attacks[1].defenderTag.replace('#', ''),
-              stars: member.attacks[1].stars,
-              destructionPercentage: member.attacks[1].destructionPercentage,
-              duration: member.attacks[1].duration,
-              order: 2,
-            },
-            {
-              where: {
-                clanWarId: war.id,
-                memberId: selectedMember.id,
-                order: 2,
-              },
-            },
-          );
-        }
-      }
-      log.info(`Updated war attacks for clan ${clan.name}`);
-    }
-
-    return void 0;
   } catch (err) {
-    log.error(`Error while updating war attacks for clan ${clan.name}`, err);
-    return void 0;
+    log.error('Error while creating attacks in database', err);
   }
-};
-
-const formatTimestamp = (timestamp: string): Date => {
-  if (!timestamp) throw new Error('No timestamp provided');
-  const clashFormattedDate = timestamp.split('T')[0];
-
-  return dayjs(clashFormattedDate).format('YYYY-MM-DD') as unknown as Date;
 };

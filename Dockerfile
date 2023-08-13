@@ -2,10 +2,7 @@
 FROM node:20.0-bullseye-slim as development
 
 ARG NODE_ENV=development
-ENV NODE_ENV=${NODE_ENV}
 ENV USER node
-
-RUN echo "NODE_ENV=${NODE_ENV}"
 
 # Install the required packages
 RUN apt update && apt upgrade -y && apt install -y --no-install-recommends \

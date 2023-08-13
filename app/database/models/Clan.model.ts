@@ -1,6 +1,8 @@
-import { Model, DataTypes, Optional } from 'sequelize';
+import type { Optional } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import ClanMember from './ClanMember.model';
 import { sequelize } from './index';
+
 export interface ClanAttributes {
   id: number;
   tag: string;
@@ -30,7 +32,7 @@ export interface ClanAttributes {
   updatedAt: Date;
 }
 
-interface ClanCreationAttributes extends Optional<ClanAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+type ClanCreationAttributes = Optional<ClanAttributes, 'createdAt' | 'id' | 'updatedAt'>;
 
 export default class Clan extends Model<ClanAttributes, ClanCreationAttributes> implements ClanAttributes {
   declare readonly id: ClanAttributes['id'];
@@ -85,7 +87,7 @@ export default class Clan extends Model<ClanAttributes, ClanCreationAttributes> 
 
   declare readonly updatedAt: ClanAttributes['updatedAt'];
 
-  declare readonly members: ClanMember[];
+  declare readonly members: Array<ClanMember>;
 }
 
 Clan.init(
@@ -115,22 +117,10 @@ Clan.init(
     location: {
       type: DataTypes.TEXT,
       allowNull: false,
-      set(val: string) {
-        this.setDataValue('location', JSON.stringify(val));
-      },
-      get() {
-        return JSON.parse(this.getDataValue('location'));
-      },
     },
     badgeUrls: {
       type: DataTypes.TEXT,
       allowNull: false,
-      set(val) {
-        this.setDataValue('badgeUrls', JSON.stringify(val));
-      },
-      get() {
-        return JSON.parse(this.getDataValue('badgeUrls'));
-      },
     },
     clanLevel: {
       type: DataTypes.INTEGER,
@@ -175,12 +165,6 @@ Clan.init(
     warLeague: {
       type: DataTypes.TEXT,
       allowNull: false,
-      set(val) {
-        this.setDataValue('warLeague', JSON.stringify(val));
-      },
-      get() {
-        return JSON.parse(this.getDataValue('warLeague'));
-      },
     },
     memberCount: {
       type: DataTypes.INTEGER,
@@ -189,12 +173,6 @@ Clan.init(
     labels: {
       type: DataTypes.TEXT,
       allowNull: false,
-      set(val) {
-        this.setDataValue('labels', JSON.stringify(val));
-      },
-      get() {
-        return JSON.parse(this.getDataValue('labels'));
-      },
     },
     requiredVersusTrophies: {
       type: DataTypes.INTEGER,
@@ -207,22 +185,10 @@ Clan.init(
     clanCapital: {
       type: DataTypes.TEXT,
       allowNull: false,
-      set(val) {
-        this.setDataValue('clanCapital', JSON.stringify(val));
-      },
-      get() {
-        return JSON.parse(this.getDataValue('clanCapital'));
-      },
     },
     chatLanguage: {
       type: DataTypes.TEXT,
       allowNull: false,
-      set(val) {
-        this.setDataValue('chatLanguage', JSON.stringify(val));
-      },
-      get() {
-        return JSON.parse(this.getDataValue('chatLanguage'));
-      },
     },
     createdAt: {
       allowNull: false,

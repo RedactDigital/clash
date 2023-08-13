@@ -1,10 +1,11 @@
+// eslint-disable-next-line import/named
 import { round } from 'mathjs';
 import { Op } from 'sequelize';
-import Clan from './database/models/Clan.model';
+import dayjs from 'dayjs';
+import type Clan from './database/models/Clan.model';
 import ClanMember from './database/models/ClanMember.model';
 import ClanWar from './database/models/ClanWar.model';
 import log from './utils/log';
-import dayjs from 'dayjs';
 
 export const updateMemberScores = async (clan: Clan): Promise<void> => {
   try {
@@ -14,15 +15,17 @@ export const updateMemberScores = async (clan: Clan): Promise<void> => {
     const clanWar = await ClanWar.findOne({
       where: { clanId: clan.id, state: ['preparation', 'inWar'] },
     });
+    if (!clanWar) throw new Error('No clan war found');
 
-    let query = {
+    const query = <
+      {
+        clanWarId: { [Op.not]: number };
+        createdAt: { [Op.gte]: Date };
+      }
+    >{
       createdAt: { [Op.gte]: dayjs('01 April 2023').toDate() },
-    } as {
-      clanWarId: { [Op.not]: number };
-      createdAt: { [Op.gte]: Date };
-    } as any;
-
-    if (clanWar) query.clanWarId = { [Op.not]: clanWar.id };
+      clanWarId: { [Op.not]: clanWar.id },
+    };
 
     const members = await ClanMember.findAll({
       where: { clanId: clan.id, role: { [Op.not]: 'Former Member' } },
@@ -35,14 +38,16 @@ export const updateMemberScores = async (clan: Clan): Promise<void> => {
       ],
     });
 
-    if (!members) throw new Error('No members found');
+    if (!members.length) throw new Error('No members found');
 
     for (const member of members) {
       const totalAttacks = member.warAttacks.filter((attack) => attack.duration > 0).length;
       const totalWars = member.warAttacks.length ? member.warAttacks.length / 2 : 0;
-      const averageAttacks = round(totalAttacks / 2 / totalWars, 2) * 100; // 2 attacks per war
+      /** Two attacks per war */
+      const averageAttacks = round(totalAttacks / 2 / totalWars, 2) * 100;
       const totalStars = member.warAttacks.reduce((acc, attack) => acc + attack.stars, 0);
-      const averageStars = round(totalStars / 6 / totalWars, 2) * 100; // 6 stars per war
+      /** 6 stars per war */
+      const averageStars = round(totalStars / 6 / totalWars, 2) * 100;
       const averageDestruction = round(member.warAttacks.reduce((acc, attack) => acc + attack.destructionPercentage, 0) / totalAttacks, 2);
 
       const weights = {
@@ -71,8 +76,6 @@ export const updateMemberScores = async (clan: Clan): Promise<void> => {
 
       await member.update({ score: totalScore, averageAttacks, totalAttacks, totalWars, totalStars, averageStars, averageDestruction });
     }
-
-    log.info(`Updated member scores for clan ${clan.name}`);
 
     return void 0;
   } catch (err) {

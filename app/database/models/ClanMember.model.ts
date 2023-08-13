@@ -1,13 +1,39 @@
-import { Model, DataTypes, Optional } from 'sequelize';
+import type { Optional } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import ClanMemberWarAttack from './ClanMemberWarAttack.model';
 import { sequelize } from './index';
+
+enum Role {
+  NOT_MEMBER = 'NOT_MEMBER',
+  MEMBER = 'MEMBER',
+  LEADER = 'LEADER',
+  ADMIN = 'ADMIN',
+  COLEADER = 'COLEADER',
+}
+
+enum WarPreference {
+  OUT = 'OUT',
+  IN = 'IN',
+}
+
+enum PlayerHouse {
+  GROUND = 'GROUND',
+  ROOF = 'ROOF',
+  FOOT = 'FOOT',
+  DECO = 'DECO',
+}
+
+enum PlayerVillage {
+  BUILDER_BASE_VILLAGE = 'BUILDER_BASE_VILLAGE',
+  HOME_VILLAGE = 'HOME_VILLAGE',
+}
 
 export interface ClanMemberAttributes {
   id: number;
   clanId: number;
   tag: string;
   name: string;
-  role: 'Member' | 'Elder' | 'Co-Leader' | 'Leader' | 'Former Member';
+  role: Role;
   notes: string;
   expLevel: number;
   league: string;
@@ -16,7 +42,7 @@ export interface ClanMemberAttributes {
   donations: number;
   donationsReceived: number;
   donationsRatio: string;
-  warPreference: string;
+  warPreference: WarPreference;
   averageAttacks: number;
   totalAttacks: number;
   totalWars: number;
@@ -28,7 +54,7 @@ export interface ClanMemberAttributes {
   updatedAt: Date;
 }
 
-interface ClanMemberCreationAttributes extends Optional<ClanMemberAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+type ClanMemberCreationAttributes = Optional<ClanMemberAttributes, 'createdAt' | 'id' | 'updatedAt'>;
 
 export default class ClanMember extends Model<ClanMemberAttributes, ClanMemberCreationAttributes> implements ClanMemberAttributes {
   declare readonly id: ClanMemberAttributes['id'];
@@ -77,7 +103,7 @@ export default class ClanMember extends Model<ClanMemberAttributes, ClanMemberCr
 
   declare readonly updatedAt: ClanMemberAttributes['updatedAt'];
 
-  declare readonly warAttacks: ClanMemberWarAttack[];
+  declare readonly warAttacks: Array<ClanMemberWarAttack>;
 }
 
 ClanMember.init(
@@ -120,12 +146,6 @@ ClanMember.init(
     },
     league: {
       type: DataTypes.TEXT,
-      set: function (val) {
-        this.setDataValue('league', JSON.stringify(val));
-      },
-      get: function () {
-        return JSON.parse(this.getDataValue('league'));
-      },
     },
     trophies: {
       type: DataTypes.INTEGER,
@@ -198,3 +218,5 @@ ClanMember.init(
 );
 
 ClanMember.hasMany(ClanMemberWarAttack, { foreignKey: 'memberId', as: 'warAttacks' });
+
+export { Role, WarPreference, PlayerHouse, PlayerVillage };
