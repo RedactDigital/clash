@@ -15,7 +15,7 @@ export const updateMemberScores = async (clan: Clan): Promise<void> => {
     const clanWar = await ClanWar.findOne({
       where: { clanId: clan.id, state: ['preparation', 'inWar'] },
     });
-    if (!clanWar) throw new Error('No clan war found');
+    if (!clanWar) return;
 
     const query = <
       {

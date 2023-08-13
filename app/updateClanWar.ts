@@ -33,7 +33,7 @@ interface WarClan {
     townhallLevel: number;
     mapPosition: number;
     opponentAttacks: number;
-    bestOpponentAttack: {
+    bestOpponentAttack?: {
       order: number;
       attackerTag: string;
       defenderTag: string;
@@ -41,7 +41,7 @@ interface WarClan {
       destructionPercentage: number;
       duration: number;
     };
-    attacks: Array<{
+    attacks?: Array<{
       order: number;
       attackerTag: string;
       defenderTag: string;
@@ -75,7 +75,7 @@ export const updateClanWar = async (clan: Clan): Promise<void> => {
         authorization: `Bearer ${config.get('clashOfClans.apiKey')}`,
       },
     });
-    const warRes = <ClanWarResponse>await warReq.json();
+    const warRes: ClanWarResponse | undefined = <ClanWarResponse>await warReq.json();
 
     if (warRes.state === WarState.NOT_IN_WAR) {
       log.info(`Clan ${clan.name} is not in war`);
@@ -133,81 +133,86 @@ const formatTimestamp = (timestamp: string): Date => {
 };
 
 const updateWarInfo = async (warRes: ClanWarResponse, war: ClanWar): Promise<void> => {
-  if (warRes.state === WarState.IN_WAR || warRes.state === WarState.ENDED) {
-    for (const member of warRes.clan.members) {
-      /**
-       * If the member has no attacks, the API doesn't return an array of attacks
-       * in other words it returns undefined. If it is undefined, do nothing
-       */
-      if (!member.attacks.length) continue;
+  try {
+    if (warRes.state === WarState.IN_WAR || warRes.state === WarState.ENDED) {
+      for (const member of warRes.clan.members) {
+        /**
+         * If the member has no attacks, the API doesn't return an array of attacks
+         * in other words it returns undefined. If it is undefined, do nothing
+         */
+        if (!member.attacks) continue;
 
-      /**
-       * We need to get the member id from the database so we can update the correct member
-       */
-      const selectedMember = await ClanMember.findOne({ where: { tag: member.tag.replace('#', '') } });
-      if (!selectedMember) throw new Error('Member not found while updating war attacks');
+        /**
+         * We need to get the member id from the database so we can update the correct member
+         */
+        const selectedMember = await ClanMember.findOne({ where: { tag: member.tag.replace('#', '') } });
+        if (!selectedMember) throw new Error('Member not found while updating war attacks');
 
-      /**
-       * If the member has 1 attack, update the first attack in the database
-       */
-      if (member.attacks.length === 1) {
-        await ClanMemberWarAttack.update(
-          {
-            defenderTag: member.attacks[0].defenderTag.replace('#', ''),
-            stars: member.attacks[0].stars,
-            destructionPercentage: member.attacks[0].destructionPercentage,
-            duration: member.attacks[0].duration,
-            order: 1,
-          },
-          {
-            where: {
-              clanWarId: war.id,
-              memberId: selectedMember.id,
+        /**
+         * If the member has 1 attack, update the first attack in the database
+         */
+        if (member.attacks.length === 1) {
+          await ClanMemberWarAttack.update(
+            {
+              defenderTag: member.attacks[0].defenderTag.replace('#', ''),
+              stars: member.attacks[0].stars,
+              destructionPercentage: member.attacks[0].destructionPercentage,
+              duration: member.attacks[0].duration,
               order: 1,
             },
-          },
-        );
-      }
+            {
+              where: {
+                clanWarId: war.id,
+                memberId: selectedMember.id,
+                order: 1,
+              },
+            },
+          );
+        }
 
-      /**
-       * If the member has 2 attacks, update the first and second attack in the database
-       */
-      if (member.attacks.length === 2) {
-        await ClanMemberWarAttack.update(
-          {
-            defenderTag: member.attacks[0].defenderTag.replace('#', ''),
-            stars: member.attacks[0].stars,
-            destructionPercentage: member.attacks[0].destructionPercentage,
-            duration: member.attacks[0].duration,
-            order: 1,
-          },
-          {
-            where: {
-              clanWarId: war.id,
-              memberId: selectedMember.id,
+        /**
+         * If the member has 2 attacks, update the first and second attack in the database
+         */
+        if (member.attacks.length === 2) {
+          await ClanMemberWarAttack.update(
+            {
+              defenderTag: member.attacks[0].defenderTag.replace('#', ''),
+              stars: member.attacks[0].stars,
+              destructionPercentage: member.attacks[0].destructionPercentage,
+              duration: member.attacks[0].duration,
               order: 1,
             },
-          },
-        );
+            {
+              where: {
+                clanWarId: war.id,
+                memberId: selectedMember.id,
+                order: 1,
+              },
+            },
+          );
 
-        await ClanMemberWarAttack.update(
-          {
-            defenderTag: member.attacks[1].defenderTag.replace('#', ''),
-            stars: member.attacks[1].stars,
-            destructionPercentage: member.attacks[1].destructionPercentage,
-            duration: member.attacks[1].duration,
-            order: 2,
-          },
-          {
-            where: {
-              clanWarId: war.id,
-              memberId: selectedMember.id,
+          await ClanMemberWarAttack.update(
+            {
+              defenderTag: member.attacks[1].defenderTag.replace('#', ''),
+              stars: member.attacks[1].stars,
+              destructionPercentage: member.attacks[1].destructionPercentage,
+              duration: member.attacks[1].duration,
               order: 2,
             },
-          },
-        );
+            {
+              where: {
+                clanWarId: war.id,
+                memberId: selectedMember.id,
+                order: 2,
+              },
+            },
+          );
+        }
       }
     }
+  } catch (err) {
+    log.error('Error while updating war info', err);
+    return void 0;
   }
 };
 

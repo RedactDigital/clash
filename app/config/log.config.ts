@@ -10,7 +10,7 @@ export const log = {
   transports: {
     doc: 'The transports to use for logging. This only applies to when the environment is set to production or development',
     format: String,
-    default: "'console', 'file'",
+    default: "'console'",
     env: 'LOG_TRANSPORTS',
   },
   file: {
