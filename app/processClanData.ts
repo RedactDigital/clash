@@ -14,6 +14,7 @@ import ClanMember from './database/models/ClanMember.model';
 
 export const processClanData = async (client: Client): Promise<void> => {
   try {
+    log.info('Processing clan data');
     const server = await client.guilds.fetch({ guild: '435261927808172033' });
 
     const rulesChannel = <TextChannel | null>await server.channels.fetch('1013571853266190477');

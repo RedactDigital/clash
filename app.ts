@@ -20,8 +20,6 @@ import { config } from './app/config/index.config';
     errorEvent(discordClient);
 
     await discordClient.login(config.get('discord.token'));
-
-    // New Discord(true);
   } catch (error) {
     log.error('Error:', error);
   }
