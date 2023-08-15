@@ -1,6 +1,7 @@
 import type { Client } from 'discord.js';
 import { EmbedBuilder, Events } from 'discord.js';
 import { Op } from 'sequelize';
+// eslint-disable-next-line import/named
 import { round } from 'mathjs';
 import dayjs from 'dayjs';
 import ClanMember from '../database/models/ClanMember.model';

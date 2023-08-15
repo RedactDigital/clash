@@ -4,24 +4,12 @@
   // language - current active spelling language
   "language": "en",
   // words - list of words to be always considered correct
-  "words": [
-    "autoremove",
-    "COLEADER",
-    "ddsource",
-    "ddtags",
-    "nonconstructor",
-    "redactdigital",
-    "townhall",
-    "zerowars"
-  ],
+  "words": ["autoremove", "COLEADER", "ddsource", "ddtags", "nonconstructor", "redactdigital", "townhall", "zerowars", "logform", "healthcheck"],
   /**
    * flagWords - list of words to be always considered incorrect
    * This is useful for offensive words and common spelling errors.
    * For example "hte" should be "the"
    */
   "flagWords": [],
-  "ignorePaths": [
-    "node_modules/**",
-    "package.json"
-  ]
+  "ignorePaths": ["node_modules/**", "package.json"]
 }

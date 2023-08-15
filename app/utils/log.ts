@@ -96,7 +96,7 @@ const fileFormatter = format.combine(
   }),
 );
 
-/** ======================================== Defineing Transports ============================================ */
+/** ======================================== Defining Transports ============================================ */
 const transporters: Transports = {
   console: new transports.Console({
     format: formatter,

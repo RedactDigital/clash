@@ -1,4 +1,5 @@
-import { Model, DataTypes, Optional } from 'sequelize';
+import type { Optional } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import { sequelize } from './index';
 
 export interface ClanMemberWarAttackAttributes {
@@ -14,7 +15,7 @@ export interface ClanMemberWarAttackAttributes {
   updatedAt: Date;
 }
 
-interface ClanMemberWarAttackCreationAttributes extends Optional<ClanMemberWarAttackAttributes, 'id' | 'defenderTag' | 'createdAt' | 'updatedAt'> {}
+type ClanMemberWarAttackCreationAttributes = Optional<ClanMemberWarAttackAttributes, 'createdAt' | 'defenderTag' | 'id' | 'updatedAt'>;
 
 export default class ClanMemberWarAttack
   extends Model<ClanMemberWarAttackAttributes, ClanMemberWarAttackCreationAttributes>
