@@ -118,3 +118,20 @@ jobs:
             org.opencontainers.image.title=latest
             org.opencontainers.image.description=The most recent image built from the main branch
             org.opencontainers.image.source=ghcr.io/${{ steps.set-var.outputs.lowercase }}
+
+  clean-old-images:
+    name: Clean Old Images
+    runs-on: ubuntu-latest
+    needs: [build-final-image]
+
+    permissions:
+      packages: write
+
+    steps:
+      - uses: actions/delete-package-versions@v4
+        with:
+          owner: ${{ github.repository_owner }}
+          package-name: ${{ github.event.repository.name }}
+          package-type: container
+          min-versions-to-keep: 5
+          delete-only-untagged-versions: true
