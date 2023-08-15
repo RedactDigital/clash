@@ -17,10 +17,10 @@ export const clientReadyEvent = (client: Client): void => {
   client.once(Events.ClientReady, async () => {
     log.info(`${config.get('app.name')} discord client is ready`);
 
-    const job = new CronJob(cronUtil.everyFifteenSeconds, <CronCommand>processClanData, null, true, 'America/New_York');
+    const job = new CronJob(cronUtil.everyFiveMinutes, <CronCommand>processClanData, null, true, 'America/New_York');
     job.start();
 
-    const server = await client.guilds.fetch({ guild: '624411630507393024' });
+    const server = await client.guilds.fetch({ guild: '435261927808172033' });
 
     const rulesChannel = <TextChannel | null>await server.channels.fetch('1013571853266190477');
     if (!rulesChannel) throw new Error('Rules channel not found');
