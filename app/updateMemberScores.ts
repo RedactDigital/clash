@@ -23,7 +23,7 @@ export const updateMemberScores = async (clan: Clan): Promise<void> => {
         createdAt: { [Op.gte]: Date };
       }
     >{
-      createdAt: { [Op.gte]: dayjs('01 April 2023').toDate() },
+      createdAt: { [Op.gte]: dayjs('01 Aug 2023').toDate() },
       clanWarId: { [Op.not]: clanWar.id },
     };
 
