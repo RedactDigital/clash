@@ -24,7 +24,7 @@ export const log = {
       doc: 'The api key to use for datadog logging. This only applies to when the environment is set to production or development, and the datadog transport is enabled',
       format: String,
       default: 'secret',
-      env: 'LOG_DATADOG_API_KEY',
+      env: 'DATADOG_API_KEY',
       sensitive: true,
     },
   },

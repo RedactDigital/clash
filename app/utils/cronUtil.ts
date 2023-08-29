@@ -382,6 +382,7 @@ class CronHelper implements CronUtilInterface {
 
   _handleDayOfMonth = (expression: string, dayOfMonth: DayOfMonth): string => {
     const [originalSeconds, originalMinutes, originalHours, _originalDayOfMonth, originalMonth, originalDayOfWeek] = expression.split(' ');
+    if (!originalSeconds || !originalMinutes || !originalHours || !originalMonth || !originalDayOfWeek) throw new Error('Invalid format provided');
     return `${originalSeconds} ${originalMinutes} ${originalHours} ${dayOfMonth} ${originalMonth} ${originalDayOfWeek}`;
   };
 
@@ -390,6 +391,9 @@ class CronHelper implements CronUtilInterface {
     let minutes = undefined;
     [hours, minutes] = time.split(':');
     const [originalSeconds, originalMinutes, originalHours, originalDayOfMonth, originalMonth, originalDayOfWeek] = expression.split(' ');
+    if (!originalSeconds || !originalMinutes || !originalHours || !originalDayOfMonth || !originalMonth || !originalDayOfWeek) {
+      throw new Error('Invalid format provided');
+    }
     return `${originalSeconds} ${minutes || originalMinutes} ${hours || originalHours} ${originalDayOfMonth} ${originalMonth} ${originalDayOfWeek}`;
   };
 
@@ -400,6 +404,9 @@ class CronHelper implements CronUtilInterface {
     if (dayOfWeek.length > 1) dayOfWeek = WeekDay[dayOfWeek.toLowerCase() as keyof typeof WeekDay]; // eslint-disable-line
 
     const [originalSeconds, originalMinutes, originalHours, originalDayOfMonth, originalMonth, _originalDayOfWeek] = expression.split(' ');
+    if (!originalSeconds || !originalMinutes || !originalHours || !originalDayOfMonth || !originalMonth || !_originalDayOfWeek) {
+      throw new Error('Invalid format provided');
+    }
     return `${originalSeconds} ${originalMinutes} ${originalHours} ${originalDayOfMonth} ${originalMonth} ${dayOfWeek}`;
   };
 
@@ -410,6 +417,7 @@ class CronHelper implements CronUtilInterface {
     if (month.length > 2) month = Month[month.toLowerCase() as keyof typeof Month]; // eslint-disable-line
 
     const [originalSeconds, originalMinutes, originalHours, originalDayOfMonth, _originalMonth, originalDayOfWeek] = expression.split(' ');
+    if (!originalSeconds || !originalMinutes || !originalHours || !originalDayOfMonth || !originalDayOfWeek) throw new Error('Invalid format provided');
     return `${originalSeconds} ${originalMinutes} ${originalHours} ${originalDayOfMonth} ${month} ${originalDayOfWeek}`;
   };
 
@@ -424,6 +432,7 @@ class CronHelper implements CronUtilInterface {
     }
 
     const [originalSeconds, originalMinutes, originalHours, originalDayOfMonth, _originalMonth, originalDayOfWeek] = expression.split(' ');
+    if (!originalSeconds || !originalMinutes || !originalHours || !originalDayOfMonth || !originalDayOfWeek) throw new Error('Invalid format provided');
     return `${originalSeconds} ${originalMinutes} ${originalHours} ${originalDayOfMonth} ${monthsArray.join(',')} ${originalDayOfWeek}`;
   };
 
@@ -464,6 +473,10 @@ class CronHelper implements CronUtilInterface {
     if (hours > 23) hours -= 24;
     /** We don't want to go under 0 hours */
     if (hours < 0) hours += 24;
+
+    if (!originalSeconds || !originalMinutes || !originalHours || !originalDayOfMonth || !originalMonth || !originalDayOfWeek) {
+      throw new Error('Invalid format provided');
+    }
     return `${originalSeconds} ${originalMinutes} ${hours} ${originalDayOfMonth} ${originalMonth} ${originalDayOfWeek}`;
   };
 }
