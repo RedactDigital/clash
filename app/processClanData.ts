@@ -17,7 +17,7 @@ export const processClanData = async (client: Client): Promise<void> => {
     log.info('Processing clan data');
     const server = await client.guilds.fetch({ guild: '435261927808172033' });
 
-    const rulesChannel = <TextChannel | null>await server.channels.fetch('1013571853266190477');
+    const rulesChannel = <TextChannel | null>await server.channels.fetch('638199741196402718');
     if (!rulesChannel) throw new Error('Rules channel not found');
 
     const announcementsChannel = <TextChannel | null>await server.channels.fetch('624411630507393045');
@@ -86,7 +86,7 @@ const embedTop25 = async (channel: TextChannel): Promise<void> => {
     .addFields(formatFieldData);
 
   const messages = await channel.messages.fetch();
-  const message = messages.get('1013572832145440849');
+  const message = messages.get('1317234071482536017');
   if (!message) throw new Error('Discord message not found');
   await message.edit({ embeds: [embed] });
 };
@@ -158,7 +158,7 @@ const embedEvents = async (channel: TextChannel): Promise<void> => {
   });
 
   const messages = await channel.messages.fetch();
-  const message = messages.get('1013939443033452544');
+  const message = messages.get('1317233965555253309');
   if (!message) throw new Error('Discord message not found');
   await message.edit({ embeds: sortedEmbeds });
 };
