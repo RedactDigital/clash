@@ -193,6 +193,7 @@ interface PlayerResponse {
   };
 }
 
+/* eslint-disable-next-line max-statements */
 export const updateClan = async (clan: Clan): Promise<void> => {
   try {
     const req = await fetch(`https://api.clashofclans.com/v1/clans/%23${clan.tag}`, {
@@ -230,12 +231,6 @@ export const updateClan = async (clan: Clan): Promise<void> => {
     });
 
     /**
-     * Update clan members status to reflect info from API
-     */
-    const formerMembers = clan.members.filter((member) => !res.memberList.find((m: ClanMemberResponse) => m.tag.replace('#', '') === member.tag));
-    for (const formerMember of formerMembers) await formerMember.update({ role: Role.NOT_MEMBER });
-
-    /**
      * Update clan members data to reflect info from API
      */
     for (const member of res.memberList) {
@@ -253,7 +248,7 @@ export const updateClan = async (clan: Clan): Promise<void> => {
 
       const [existingMember, noMemberExists] = await ClanMember.findOrCreate({
         where: { tag: member.tag.replace('#', '') },
-        defaults: <ClanMember>{
+        defaults: {
           clanId: clan.id,
           tag: member.tag.replace('#', ''),
           name: member.name,
@@ -261,7 +256,7 @@ export const updateClan = async (clan: Clan): Promise<void> => {
           expLevel: member.expLevel,
           league: JSON.stringify(member.league),
           trophies: member.trophies,
-          versusTrophies: member.versusTrophies,
+          versusTrophies: member.builderBaseTrophies,
           donations: member.donations,
           donationsReceived: member.donationsReceived,
           donationsRatio: calculateDonationsRatio(member.donations, member.donationsReceived),
@@ -286,6 +281,12 @@ export const updateClan = async (clan: Clan): Promise<void> => {
         });
       }
     }
+
+    /**
+     * Update clan members status to reflect info from API
+     */
+    const formerMembers = clan.members.filter((member) => !res.memberList.find((m: ClanMemberResponse) => m.tag.replace('#', '') === member.tag));
+    for (const formerMember of formerMembers) await formerMember.update({ role: Role.NOT_MEMBER });
 
     return void 0;
   } catch (err) {

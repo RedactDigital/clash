@@ -86,7 +86,7 @@ const embedTop25 = async (channel: TextChannel): Promise<void> => {
     .addFields(formatFieldData);
 
   const messages = await channel.messages.fetch();
-  const message = messages.get('1317234071482536017');
+  const message = messages.get('1317240526629507134');
   if (!message) throw new Error('Discord message not found');
   await message.edit({ embeds: [embed] });
 };
@@ -158,7 +158,7 @@ const embedEvents = async (channel: TextChannel): Promise<void> => {
   });
 
   const messages = await channel.messages.fetch();
-  const message = messages.get('1317233965555253309');
+  const message = messages.get('1317243803899400225');
   if (!message) throw new Error('Discord message not found');
   await message.edit({ embeds: sortedEmbeds });
 };

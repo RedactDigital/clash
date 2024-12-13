@@ -54,7 +54,10 @@ export interface ClanMemberAttributes {
   updatedAt: Date;
 }
 
-type ClanMemberCreationAttributes = Optional<ClanMemberAttributes, 'createdAt' | 'id' | 'updatedAt'>;
+type ClanMemberCreationAttributes = Optional<
+  ClanMemberAttributes,
+  'averageAttacks' | 'averageDestruction' | 'averageStars' | 'createdAt' | 'id' | 'notes' | 'score' | 'totalAttacks' | 'totalStars' | 'totalWars' | 'updatedAt'
+>;
 
 export default class ClanMember extends Model<ClanMemberAttributes, ClanMemberCreationAttributes> implements ClanMemberAttributes {
   declare readonly id: ClanMemberAttributes['id'];
