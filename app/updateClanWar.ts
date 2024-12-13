@@ -222,7 +222,7 @@ const createAttacksInDatabase = async (warRes: ClanWarResponse, war: ClanWar): P
      * If the status of the war is preparation, we need to create the war lineup
      * so each member has 2 attacks in the database per war
      */
-    if (warRes.state === WarState.IN_WAR) {
+    if (warRes.state === WarState.PREPARATION) {
       const memberAttacks = await ClanMemberWarAttack.findAll({ where: { clanWarId: war.id } });
       if (memberAttacks.length === 0) {
         /**
