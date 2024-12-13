@@ -51,9 +51,9 @@ export const updateMemberScores = async (clan: Clan): Promise<void> => {
       const averageDestruction = round(member.warAttacks.reduce((acc, attack) => acc + attack.destructionPercentage, 0) / totalAttacks, 2);
 
       const weights = {
-        attacks: 0.6,
-        stars: 0.3,
-        destruction: 0.1,
+        attacks: 0.75,
+        stars: 0.2,
+        destruction: 0.05,
         donations: 0,
       };
 
