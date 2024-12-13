@@ -22,7 +22,7 @@ services:
       - zerowars
 
   db:
-    image: mysql:8.0
+    image: mysql:8.3.0
     restart: unless-stopped
     volumes:
       - ./storage/mysql:/var/lib/mysql
