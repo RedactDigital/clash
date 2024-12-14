@@ -6,7 +6,7 @@ import ClanMemberWarAttack from './database/models/ClanMemberWarAttack.model';
 import ClanWar from './database/models/ClanWar.model';
 import log from './utils/log';
 
-enum WarState {
+export enum WarState {
   NOT_IN_WAR = 'notInWar',
   IN_MATCHMAKING = 'inMatchmaking',
   PREPARATION = 'preparation',

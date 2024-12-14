@@ -6,25 +6,27 @@ import type Clan from './database/models/Clan.model';
 import ClanMember from './database/models/ClanMember.model';
 import ClanWar from './database/models/ClanWar.model';
 import log from './utils/log';
+import { WarState } from './updateClanWar';
 
+/* eslint-disable-next-line max-statements */
 export const updateMemberScores = async (clan: Clan): Promise<void> => {
   try {
     /**
      * Get the clan war id for the current war so we can exclude it from the score
      */
     const clanWar = await ClanWar.findOne({
-      where: { clanId: clan.id, state: ['preparation', 'inWar'] },
+      where: { clanId: clan.id, state: [WarState.ENDED] },
     });
     if (!clanWar) return;
 
     const query = <
       {
-        clanWarId: { [Op.not]: number };
+        clanWarId: number;
         createdAt: { [Op.gte]: Date };
       }
     >{
       createdAt: { [Op.gte]: dayjs('01 Aug 2023').toDate() },
-      clanWarId: { [Op.not]: clanWar.id },
+      clanWarId: clanWar.id,
     };
 
     const members = await ClanMember.findAll({
